@@ -1,5 +1,7 @@
 package org.acme.warehouse;
 
+import io.quarkus.security.Authenticated;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -9,6 +11,7 @@ import java.util.List;
 @Path("/api/warehouse")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Authenticated
 public class WarehouseResource {
 
     @Inject
@@ -16,12 +19,14 @@ public class WarehouseResource {
 
     @GET
     @Path("/items")
+    @RolesAllowed({"user", "admin"})
     public List<WarehouseItem> getAllItems() {
         return warehouseRepository.findAll();
     }
 
     @GET
     @Path("/items/{id}")
+    @RolesAllowed({"user", "admin"})
     public Response getItem(@PathParam("id") Long id) {
         return warehouseRepository.findById(id)
             .map(item -> Response.ok(item).build())
@@ -30,6 +35,7 @@ public class WarehouseResource {
 
     @GET
     @Path("/products/{productId}")
+    @RolesAllowed({"user", "admin"})
     public Response getItemByProductId(@PathParam("productId") Long productId) {
         return warehouseRepository.findByProductId(productId)
             .map(item -> Response.ok(item).build())
@@ -38,6 +44,7 @@ public class WarehouseResource {
 
     @GET
     @Path("/check-availability")
+    @RolesAllowed({"user", "admin"})
     public boolean checkAvailability(@QueryParam("productId") Long productId, 
                                      @QueryParam("quantity") Integer quantity) {
         return warehouseRepository.checkAvailability(productId, quantity);
@@ -45,6 +52,7 @@ public class WarehouseResource {
 
     @POST
     @Path("/reserve")
+    @RolesAllowed("admin")
     public Response reserveStock(@QueryParam("productId") Long productId, 
                                  @QueryParam("quantity") Integer quantity) {
         try {

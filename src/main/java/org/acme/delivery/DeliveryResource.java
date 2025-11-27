@@ -1,5 +1,7 @@
 package org.acme.delivery;
 
+import io.quarkus.security.Authenticated;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -10,18 +12,21 @@ import java.util.List;
 @Path("/api/deliveries")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Authenticated
 public class DeliveryResource {
 
     @Inject
     DeliveryRepository deliveryRepository;
 
     @GET
+    @RolesAllowed({"user", "admin"})
     public List<Delivery> getAllDeliveries() {
         return deliveryRepository.findAll();
     }
 
     @GET
     @Path("/{id}")
+    @RolesAllowed({"user", "admin"})
     public Response getDelivery(@PathParam("id") Long id) {
         return deliveryRepository.findById(id)
             .map(delivery -> Response.ok(delivery).build())
@@ -30,6 +35,7 @@ public class DeliveryResource {
 
     @GET
     @Path("/order/{orderId}")
+    @RolesAllowed({"user", "admin"})
     public Response getDeliveryByOrderId(@PathParam("orderId") Long orderId) {
         return deliveryRepository.findByOrderId(orderId)
             .map(delivery -> Response.ok(delivery).build())
@@ -37,6 +43,7 @@ public class DeliveryResource {
     }
 
     @POST
+    @RolesAllowed("admin")
     public Response createDelivery(@QueryParam("orderId") Long orderId, 
                                    @QueryParam("address") String address) {
         Delivery delivery = new Delivery(
@@ -55,6 +62,7 @@ public class DeliveryResource {
 
     @PUT
     @Path("/{id}/status")
+    @RolesAllowed("admin")
     public Response updateDeliveryStatus(@PathParam("id") Long id, 
                                         @QueryParam("status") DeliveryStatus status) {
         Delivery updated = deliveryRepository.updateStatus(id, status);

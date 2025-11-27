@@ -1,5 +1,7 @@
 package org.acme.notification;
 
+import io.quarkus.security.Authenticated;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -9,18 +11,21 @@ import java.util.List;
 @Path("/api/notifications")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Authenticated
 public class NotificationResource {
 
     @Inject
     NotificationRepository notificationRepository;
 
     @GET
+    @RolesAllowed("admin")
     public List<Notification> getAllNotifications() {
         return notificationRepository.findAll();
     }
 
     @GET
     @Path("/{id}")
+    @RolesAllowed({"user", "admin"})
     public Response getNotification(@PathParam("id") Long id) {
         return notificationRepository.findById(id)
             .map(notification -> Response.ok(notification).build())
@@ -29,12 +34,14 @@ public class NotificationResource {
 
     @GET
     @Path("/recipient/{email}")
+    @RolesAllowed({"user", "admin"})
     public List<Notification> getNotificationsByRecipient(@PathParam("email") String email) {
         return notificationRepository.findByRecipient(email);
     }
 
     @POST
     @Path("/send")
+    @RolesAllowed("admin")
     public Response sendNotification(@QueryParam("recipient") String recipient,
                                     @QueryParam("subject") String subject,
                                     @QueryParam("message") String message) {
@@ -52,6 +59,7 @@ public class NotificationResource {
 
     @POST
     @Path("/order-confirmation")
+    @RolesAllowed("admin")
     public Response sendOrderConfirmation(@QueryParam("email") String email,
                                          @QueryParam("subject") String subject,
                                          @QueryParam("message") String message) {

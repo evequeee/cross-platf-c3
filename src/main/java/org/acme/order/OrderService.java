@@ -6,6 +6,7 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.acme.warehouse.WarehouseClient;
 import org.acme.delivery.DeliveryClient;
 import org.acme.notification.NotificationClient;
+import java.util.List;
 
 @ApplicationScoped
 public class OrderService {
@@ -24,6 +25,14 @@ public class OrderService {
     @Inject
     @RestClient
     NotificationClient notificationClient;
+
+    public List<Order> getAllOrders() {
+        return orderRepository.findAll();
+    }
+
+    public Order getOrderById(Long id) {
+        return orderRepository.findById(id).orElse(null);
+    }
 
     public Order createOrder(Order order) {
         // Validate and save order
