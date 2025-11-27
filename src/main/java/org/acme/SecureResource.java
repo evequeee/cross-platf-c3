@@ -1,4 +1,4 @@
-package org.example;
+package org.acme;
 
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.GET;
