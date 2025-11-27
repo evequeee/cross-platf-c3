@@ -12,8 +12,6 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.acme.order.Order;
 import org.acme.order.OrderService;
 import org.acme.warehouse.WarehouseClient;
-import org.acme.warehouse.WarehouseItem;
-import org.acme.delivery.Delivery;
 import org.acme.delivery.DeliveryClient;
 import io.quarkus.security.identity.SecurityIdentity;
 
@@ -39,18 +37,13 @@ public class FrontendResource {
     @CheckedTemplate
     public static class Templates {
         public static native TemplateInstance index();
-        public static native TemplateInstance dashboard(String username, List<Order> orders, 
-                                                        List<WarehouseItem> items, 
-                                                        List<Delivery> deliveries);
+        public static native TemplateInstance dashboard(SecurityIdentity identity, List<Order> orders);
         public static native TemplateInstance login();
     }
 
     @GET
     @Produces(MediaType.TEXT_HTML)
     public TemplateInstance index() {
-        if (securityIdentity.isAnonymous()) {
-            return Templates.login();
-        }
         return Templates.index();
     }
 
@@ -59,21 +52,8 @@ public class FrontendResource {
     @Authenticated
     @Produces(MediaType.TEXT_HTML)
     public TemplateInstance dashboard() {
-        String username = securityIdentity.getPrincipal().getName();
-        
         List<Order> orders = orderService.getAllOrders();
-        List<WarehouseItem> items = List.of(); // warehouseClient will be called via REST
-        List<Delivery> deliveries = List.of();
-        
-        try {
-            // These calls will work when services are protected properly
-            // items = warehouseClient.getAllItems();
-            // deliveries = deliveryClient.getAllDeliveries();
-        } catch (Exception e) {
-            System.err.println("Error fetching data: " + e.getMessage());
-        }
-        
-        return Templates.dashboard(username, orders, items, deliveries);
+        return Templates.dashboard(securityIdentity, orders);
     }
 
     @GET

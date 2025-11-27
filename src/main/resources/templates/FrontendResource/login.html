@@ -2,114 +2,28 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Вхід - Система логістики</title>
+    <title>Інформація про вхід</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        
-        .login-container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            padding: 60px;
-            text-align: center;
-            max-width: 450px;
-            width: 100%;
-        }
-        
-        h1 {
-            color: #333;
-            font-size: 2.2em;
-            margin-bottom: 15px;
-        }
-        
-        p {
-            color: #666;
-            font-size: 1.1em;
-            margin-bottom: 40px;
-        }
-        
-        .btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 15px 50px;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.1em;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            transition: transform 0.3s, box-shadow 0.3s;
-            width: 100%;
-        }
-        
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-        }
-        
-        .info {
-            margin-top: 30px;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            text-align: left;
-        }
-        
-        .info h3 {
-            color: #667eea;
-            margin-bottom: 10px;
-        }
-        
-        .info ul {
-            list-style: none;
-            padding-left: 0;
-        }
-        
-        .info li {
-            padding: 8px 0;
-            color: #666;
-        }
-        
-        .info li:before {
-            content: "✓ ";
-            color: #667eea;
-            font-weight: bold;
-            margin-right: 8px;
-        }
+        body { background: #1a0d2e; color: #c8b8db; font-family: Arial; margin: 0; padding: 40px; }
+        .header { background: #23153d; padding: 25px; border: 2px solid #3d2a5c; margin-bottom: 30px; }
+        h1 { color: #d0c4e0; margin: 0; }
+        .info-box { background: #23153d; border: 2px solid #3d2a5c; padding: 30px; margin: 20px 0; }
+        code { background: #1a0d2e; color: #5cb85c; padding: 5px 10px; border: 1px solid #3d2a5c; }
+        .btn { padding: 15px 30px; background: #3d2a5c; color: #d0c4e0; text-decoration: none; display: inline-block; margin: 10px 5px 0 0; border: 2px solid #5c4580; }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <h1>🔐 Вхід до системи</h1>
-        <p>Для доступу до системи логістики необхідна автентифікація</p>
-        
-        <a href="/dashboard" class="btn">Увійти через Keycloak</a>
-        
-        <div class="info">
-            <h3>Можливості системи:</h3>
-            <ul>
-                <li>Управління замовленнями</li>
-                <li>Контроль складу</li>
-                <li>Відстеження доставок</li>
-                <li>Система повідомлень</li>
-                <li>Безпечний доступ через OIDC</li>
-            </ul>
-        </div>
+    <div class="header">
+        <h1>🚚 Інформація про вхід</h1>
     </div>
+    <div class="info-box">
+        <h2>Автентифікація через OIDC</h2>
+        <p>Система використовує Keycloak для автентифікації</p>
+        <h3>Тестові облікові записи:</h3>
+        <p><strong>Користувач:</strong> <code>alice</code> / <code>alice</code></p>
+        <p><strong>Адміністратор:</strong> <code>admin</code> / <code>admin</code></p>
+    </div>
+    <a href="/dashboard" class="btn">Перейти до панелі</a>
+    <a href="/" class="btn">← Назад</a>
 </body>
 </html>
