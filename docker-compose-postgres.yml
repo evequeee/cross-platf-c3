@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  postgres-order:
+    image: postgres:16
+    container_name: order-postgres
+    environment:
+      POSTGRES_DB: order_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - order-db-data:/var/lib/postgresql/data
+    networks:
+      - logistics-network
+
+  postgres-warehouse:
+    image: postgres:16
+    container_name: warehouse-postgres
+    environment:
+      POSTGRES_DB: warehouse_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - warehouse-db-data:/var/lib/postgresql/data
+    networks:
+      - logistics-network
+
+  postgres-delivery:
+    image: postgres:16
+    container_name: delivery-postgres
+    environment:
+      POSTGRES_DB: delivery_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5434:5432"
+    volumes:
+      - delivery-db-data:/var/lib/postgresql/data
+    networks:
+      - logistics-network
+
+  postgres-notification:
+    image: postgres:16
+    container_name: notification-postgres
+    environment:
+      POSTGRES_DB: notification_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5435:5432"
+    volumes:
+      - notification-db-data:/var/lib/postgresql/data
+    networks:
+      - logistics-network
+
+volumes:
+  order-db-data:
+  warehouse-db-data:
+  delivery-db-data:
+  notification-db-data:
+
+networks:
+  logistics-network:
+    driver: bridge

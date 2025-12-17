@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "org.acme.logistics.delivery.grpc";
+option java_outer_classname = "DeliveryProto";
+
+package delivery;
+
+service DeliveryService {
+  rpc CreateDelivery(CreateDeliveryRequest) returns (DeliveryInfo);
+  rpc UpdateDeliveryStatus(UpdateStatusRequest) returns (DeliveryInfo);
+  rpc GetDeliveryByOrder(OrderRequest) returns (DeliveryInfo);
+  rpc TrackDelivery(TrackRequest) returns (TrackResponse);
+}
+
+message CreateDeliveryRequest {
+  int64 order_id = 1;
+  string delivery_address = 2;
+}
+
+message UpdateStatusRequest {
+  int64 delivery_id = 1;
+  string status = 2;
+}
+
+message OrderRequest {
+  int64 order_id = 1;
+}
+
+message TrackRequest {
+  string tracking_number = 1;
+}
+
+message DeliveryInfo {
+  int64 id = 1;
+  int64 order_id = 2;
+  string driver_name = 3;
+  string driver_phone = 4;
+  string vehicle_number = 5;
+  string delivery_address = 6;
+  string status = 7;
+  string tracking_number = 8;
+  string estimated_delivery_time = 9;
+  string current_location = 10;
+}
+
+message TrackResponse {
+  string tracking_number = 1;
+  string current_status = 2;
+  string current_location = 3;
+  string estimated_arrival = 4;
+  string driver_name = 5;
+  string driver_phone = 6;
+}
