@@ -25,8 +25,8 @@ public class Order extends PanacheEntity {
     @Column(nullable = false)
     private OrderStatus status;
     
-    @Column(name = "delivery_address", nullable = false)
-    private String deliveryAddress;
+    @Column(name = "delivery_address")
+    private String deliveryAddress = "";
     
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -35,7 +35,7 @@ public class Order extends PanacheEntity {
     private LocalDateTime updatedAt;
     
     @Column(name = "total_price", nullable = false)
-    private Double totalPrice;
+    private Double totalPrice = 0.0;
 
     public Order() {
         this.createdAt = LocalDateTime.now();
@@ -89,6 +89,7 @@ public class Order extends PanacheEntity {
 
     public String getDeliveryAddress() { return deliveryAddress; }
     public void setDeliveryAddress(String deliveryAddress) { this.deliveryAddress = deliveryAddress; }
+    public void setShippingAddress(String shippingAddress) { this.deliveryAddress = shippingAddress; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }

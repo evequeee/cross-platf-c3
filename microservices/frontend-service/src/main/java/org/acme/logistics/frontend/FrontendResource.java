@@ -10,6 +10,7 @@ import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -128,5 +129,25 @@ public class FrontendResource {
     @Path("/logout")
     public Response logout() {
         return Response.seeOther(URI.create("/")).build();
+    }
+
+    @POST
+    @Path("/api/orders")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response createOrder(
+            @FormParam("customerName") String customerName,
+            @FormParam("customerEmail") String customerEmail,
+            @FormParam("deliveryAddress") String deliveryAddress) {
+        try {
+            Map<String, Object> order = new HashMap<>();
+            order.put("customerName", customerName);
+            order.put("customerEmail", customerEmail);
+            order.put("shippingAddress", deliveryAddress);
+            order.put("items", List.of());
+            orderClient.createOrder(order);
+        } catch (Exception e) {
+            // ignore errors for now
+        }
+        return Response.seeOther(URI.create("/orders")).build();
     }
 }
