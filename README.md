@@ -1,194 +1,170 @@
-<<<<<<< HEAD
-# code-with-quarkus
+# Logistics Microservices Platform
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+Мікросервісна платформа для управління логістикою, розроблена на Quarkus.
 
-If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.
+## 🏗️ Архітектура
 
-## Running the application in dev mode
-
-You can run your application in dev mode that enables live coding using:
-
-```shell script
-./mvnw quarkus:dev
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    FRONTEND SERVICE (8080)                   │
+│                         (Qute GUI)                           │
+└──────┬──────────────┬──────────────┬──────────────┬─────────┘
+       │ REST         │ REST         │ REST         │ REST
+       ▼              ▼              ▼              ▼
+┌──────────┐   ┌──────────┐   ┌──────────┐   ┌──────────┐
+│  ORDER   │   │WAREHOUSE │   │ DELIVERY │   │  NOTIF   │
+│ SERVICE  │◄─►│ SERVICE  │◄─►│ SERVICE  │◄─►│ SERVICE  │
+│  (8081)  │   │  (8082)  │   │  (8083)  │   │  (8084)  │
+└────┬─────┘   └────┬─────┘   └────┬─────┘   └────┬─────┘
+     │              │ gRPC:9082    │ gRPC:9083    │
+     │              │              │              │
+     ▼              ▼              ▼              ▼
+┌──────────┐   ┌──────────┐   ┌──────────┐   ┌──────────┐
+│PostgreSQL│   │PostgreSQL│   │PostgreSQL│   │PostgreSQL│
+│  :5432   │   │  :5433   │   │  :5434   │   │  :5435   │
+└──────────┘   └──────────┘   └──────────┘   └──────────┘
 ```
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
+## 🚀 Швидкий старт
 
-## Packaging and running the application
-
-The application can be packaged using:
-
-```shell script
-./mvnw package
+### 1. Запуск всіх сервісів (Dev режим)
+```bash
+# Запустити всі мікросервіси
+START-ALL.bat
 ```
 
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
+### 2. Відкрити в браузері
+- **Frontend**: http://localhost:8080
+- **Dashboard**: http://localhost:8080/dashboard
 
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
+## 📦 Мікросервіси
 
-If you want to build an _über-jar_, execute the following command:
+| Сервіс | Порт | gRPC | База даних | Pattern |
+|--------|------|------|------------|---------|
+| Frontend | 8080 | - | - | - |
+| Order | 8081 | - | order_db:5432 | Active Record (Panache) |
+| Warehouse | 8082 | 9082 | warehouse_db:5433 | Active Record (Panache) |
+| Delivery | 8083 | 9083 | delivery_db:5434 | Repository (JPA) |
+| Notification | 8084 | - | notification_db:5435 | Repository (JPA) |
 
-```shell script
-./mvnw package -Dquarkus.package.jar.type=uber-jar
+## 🔧 Технології
+
+- **Framework**: Quarkus 3.26.4
+- **Java**: 21
+- **Database**: PostgreSQL 16
+- **Communication**: REST + gRPC
+- **Security**: OIDC (Keycloak)
+- **Templates**: Qute
+- **Build**: Maven
+
+## 🔐 Безпека (Keycloak)
+
+### Запуск Keycloak
+```bash
+START-KEYCLOAK.bat
 ```
 
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
+### Налаштування
+- **URL**: http://localhost:8180
+- **Admin**: admin / admin
+- **Realm**: logistics
 
-## Creating a native executable
+### Тестові користувачі
+| Username | Password | Roles |
+|----------|----------|-------|
+| admin@logistics.com | admin123 | admin, user |
+| user@logistics.com | user123 | user |
+| manager@logistics.com | manager123 | manager, user |
 
-You can create a native executable using:
+## 📡 API Endpoints
 
-```shell script
-./mvnw package -Dnative
+### Order Service (8081)
+```
+GET    /api/orders           - Список замовлень
+GET    /api/orders/{id}      - Отримати замовлення
+POST   /api/orders           - Створити замовлення
+PUT    /api/orders/{id}      - Оновити замовлення
+DELETE /api/orders/{id}      - Видалити замовлення
 ```
 
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
-
-```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
+### Warehouse Service (8082)
+```
+GET    /api/warehouse              - Список товарів
+GET    /api/warehouse/{id}         - Отримати товар
+GET    /api/warehouse/check/{id}   - Перевірити наявність
+POST   /api/warehouse/reserve/{id} - Зарезервувати
+POST   /api/warehouse/release/{id} - Звільнити резерв
 ```
 
-You can then execute your native executable with: `./target/code-with-quarkus-1.0.0-SNAPSHOT-runner`
+### Delivery Service (8083)
+```
+GET    /api/delivery              - Список доставок
+GET    /api/delivery/{id}         - Отримати доставку
+GET    /api/delivery/track/{num}  - Відстежити посилку
+POST   /api/delivery              - Створити доставку
+PUT    /api/delivery/{id}/status  - Оновити статус
+```
 
-If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
+### Notification Service (8084)
+```
+GET    /api/notifications         - Список сповіщень
+GET    /api/notifications/{id}    - Отримати сповіщення
+POST   /api/notifications         - Створити сповіщення
+POST   /api/notifications/send    - Надіслати сповіщення
+```
 
-## Related Guides
+## 🛠️ DevUI
 
-- REST ([guide](https://quarkus.io/guides/rest)): A Jakarta REST implementation utilizing build time processing and Vert.x. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it.
+Кожен сервіс має Quarkus DevUI:
+- Frontend: http://localhost:8080/q/dev/
+- Order: http://localhost:8081/q/dev/
+- Warehouse: http://localhost:8082/q/dev/
+- Delivery: http://localhost:8083/q/dev/
+- Notification: http://localhost:8084/q/dev/
 
-## Provided Code
+## 📋 Лабораторні роботи
 
-### REST
+| № | Назва | Статус |
+|---|-------|--------|
+| 1 | Quarkus REST + JDK 21 | ✅ |
+| 2 | OIDC Security | ✅ |
+| 3 | Мікросервіси + REST + gRPC | ✅ |
+| 4 | Frontend + Keycloak | ✅ |
+| 5 | Active Record Pattern (Panache) | ✅ |
+| 6 | Repository Pattern (JPA) | ✅ |
 
-Easily start your REST Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
-# cross-platf-c3
-=======
-# Cross-Platform Programming Lab Work #3
-## Microservices Architecture with Quarkus
-
-This project implements a logistics management system using microservices architecture with REST and gRPC communication.
-
-## 📁 Project Structure
+## 📂 Структура проєкту
 
 ```
 cross-platf-c3-main/
-├── microservices/
-│   ├── order-service/          # Port 8081, gRPC 9001
-│   ├── warehouse-service/      # Port 8082, gRPC 9002
-│   ├── delivery-service/       # Port 8083, gRPC 9003
-│   └── notification-service/   # Port 8084
-├── start-all.ps1              # Start all services
-├── test-services.ps1          # Test all endpoints
-├── QUICKSTART.md              # Quick start guide
-├── TESTING.md                 # Testing scenarios
-└── LAB_REPORT.md              # Complete lab report
+├── docker-compose-postgres.yml    # PostgreSQL databases
+├── docker-compose-keycloak.yml    # Keycloak SSO
+├── keycloak/
+│   └── logistics-realm.json       # Keycloak realm config
+├── START-ALL.bat                  # Start all services
+├── START-KEYCLOAK.bat             # Start Keycloak
+└── microservices/
+    ├── frontend-service/          # GUI (port 8080)
+    ├── order-service/             # Orders (port 8081)
+    ├── warehouse-service/         # Inventory (port 8082)
+    ├── delivery-service/          # Deliveries (port 8083)
+    └── notification-service/      # Notifications (port 8084)
 ```
 
-## 🚀 Quick Start
+## 🐳 Docker
 
-### Prerequisites
-- Java 21+
-- Maven 3.9+
-- PowerShell (for automation scripts)
-
-### Starting All Services
-
-**Option 1: Using PowerShell script**
-```powershell
-.\start-all.ps1
+### Запуск баз даних
+```bash
+docker-compose -f docker-compose-postgres.yml up -d
 ```
 
-**Option 2: Manually start each service**
-```powershell
-cd microservices/order-service
-./mvnw quarkus:dev
-
-cd ../warehouse-service
-./mvnw quarkus:dev
-
-cd ../delivery-service
-./mvnw quarkus:dev
-
-cd ../notification-service
-./mvnw quarkus:dev
+### Запуск Keycloak
+```bash
+docker-compose -f docker-compose-keycloak.yml up -d
 ```
 
-### DevUI Access
-- Order Service: http://localhost:8081/q/dev/
-- Warehouse Service: http://localhost:8082/q/dev/
-- Delivery Service: http://localhost:8083/q/dev/
-- Notification Service: http://localhost:8084/q/dev/
-
-## 🏗️ Architecture
-
-### Service Communication
-
+### Зупинка всього
+```bash
+docker-compose -f docker-compose-postgres.yml down
+docker-compose -f docker-compose-keycloak.yml down
 ```
-Order Service (Orchestrator)
-    ├─[REST]──> Warehouse Service
-    ├─[REST]──> Delivery Service
-    ├─[REST]──> Notification Service
-    ├─[gRPC]──> Warehouse Service
-    └─[gRPC]──> Delivery Service
-```
-
-### Technologies
-- **Framework**: Quarkus 3.26.4
-- **Language**: Java 21
-- **Communication**: REST (Jakarta REST), gRPC (Protocol Buffers 3)
-- **Reactive**: Mutiny
-- **Build Tool**: Maven
-
-## 📚 Documentation
-
-- **[QUICKSTART.md](QUICKSTART.md)** - Step-by-step startup guide
-- **[TESTING.md](TESTING.md)** - Testing scenarios and DevUI usage
-- **[LAB_REPORT.md](LAB_REPORT.md)** - Complete lab report with metrics
-
-## 🧪 Testing
-
-Run automated tests:
-```powershell
-.\test-services.ps1
-```
-
-Manual testing via REST:
-```powershell
-# Create order
-Invoke-RestMethod -Uri "http://localhost:8081/api/orders" -Method POST -ContentType "application/json" -Body '{"customerId":1,"itemId":1,"quantity":2}'
-
-# Check warehouse stock
-Invoke-RestMethod -Uri "http://localhost:8082/api/warehouse/1"
-
-# Track delivery
-Invoke-RestMethod -Uri "http://localhost:8083/api/deliveries/1"
-
-# Get notifications
-Invoke-RestMethod -Uri "http://localhost:8084/api/notifications"
-```
-
-## 📊 Project Metrics
-
-- **Total Services**: 4
-- **REST Endpoints**: 32+
-- **gRPC Methods**: 8
-- **Lines of Code**: 3500+
-- **Proto Files**: 2
-
-## 🎓 Lab Work Requirements
-
-✅ 4 independent microservices  
-✅ REST API communication  
-✅ gRPC communication  
-✅ Fake repositories with realistic data  
-✅ DevUI testing capability  
-✅ Complete documentation  
-
-## 📝 License
-
-This is a educational project for cross-platform programming course.
->>>>>>> 96ddf3a (lab 4 fix, labs 5 and 6)

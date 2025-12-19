@@ -48,10 +48,16 @@
             <artifactId>quarkus-rest-client-jackson</artifactId>
         </dependency>
         
-        <!-- gRPC -->
+        <!-- gRPC Client -->
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-grpc</artifactId>
+        </dependency>
+        
+        <!-- Security OIDC -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-oidc</artifactId>
         </dependency>
         
         <!-- CDI -->

@@ -19,7 +19,7 @@ public class NotificationService {
         LOG.info("Відправка " + type + " повідомлення до: " + recipient);
 
         Notification notification = new Notification(
-            null, recipient, type, subject, message
+            recipient, type, subject, message
         );
         
         notification = notificationRepository.save(notification);

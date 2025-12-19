@@ -37,7 +37,6 @@ public class DeliveryService {
         String[] driverInfo = DRIVERS[RANDOM.nextInt(DRIVERS.length)].split(":");
         
         Delivery delivery = new Delivery(
-            null,
             orderId,
             driverInfo[0],
             driverInfo[1],

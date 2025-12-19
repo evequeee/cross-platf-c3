@@ -54,13 +54,39 @@ public class NotificationRepository {
     }
 
     @Transactional
-    public Notification saveNotification(Notification notification) {
+    public Notification save(Notification notification) {
         if (notification.getId() == null) {
             entityManager.persist(notification);
             return notification;
         } else {
             return entityManager.merge(notification);
         }
+    }
+    
+    @Transactional
+    public Notification saveNotification(Notification notification) {
+        return save(notification);
+    }
+
+    public Optional<Notification> findById(Long id) {
+        return findNotificationById(id);
+    }
+
+    public List<Notification> findAll() {
+        return findAllNotifications();
+    }
+
+    public List<Notification> findFailedWithRetries() {
+        TypedQuery<Notification> query = entityManager.createQuery(
+            "SELECT n FROM Notification n WHERE n.status = :status AND n.retryCount > 0", 
+            Notification.class);
+        query.setParameter("status", NotificationStatus.FAILED);
+        return query.getResultList();
+    }
+
+    @Transactional
+    public void deleteById(Long id) {
+        deleteNotificationById(id);
     }
 
     @Transactional

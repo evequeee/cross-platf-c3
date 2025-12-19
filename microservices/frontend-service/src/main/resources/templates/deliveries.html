@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Доставки - Logistics System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/"><i class="bi bi-truck"></i> Logistics System</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="/">Головна</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/dashboard">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/orders">Замовлення</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/warehouse">Склад</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/deliveries">Доставки</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h2><i class="bi bi-truck"></i> Доставки</h2>
+        <hr>
+
+        <!-- Track form -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5><i class="bi bi-search"></i> Відстежити посилку</h5>
+                <form class="row g-3" action="/deliveries/track" method="GET">
+                    <div class="col-auto">
+                        <input type="text" class="form-control" name="trackingNumber" placeholder="Номер відстеження">
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary">Відстежити</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Order ID</th>
+                        <th>Tracking #</th>
+                        <th>Статус</th>
+                        <th>Водій</th>
+                        <th>Адреса доставки</th>
+                        <th>Очікувана доставка</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {#if deliveries.isEmpty}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted">Доставок поки немає</td>
+                    </tr>
+                    {#else}
+                    {#for d in deliveries}
+                    <tr>
+                        <td>{d.id}</td>
+                        <td><a href="/orders/{d.orderId}">{d.orderId}</a></td>
+                        <td><code>{d.trackingNumber}</code></td>
+                        <td>
+                            <span class="badge bg-{d.status == 'PENDING' ? 'secondary' : d.status == 'PICKED_UP' ? 'info' : d.status == 'IN_TRANSIT' ? 'warning' : d.status == 'DELIVERED' ? 'success' : 'danger'}">
+                                {d.status}
+                            </span>
+                        </td>
+                        <td>{d.driverName ?: 'Не призначено'}</td>
+                        <td>{d.deliveryAddress}</td>
+                        <td>{d.estimatedDeliveryTime}</td>
+                    </tr>
+                    {/for}
+                    {/if}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

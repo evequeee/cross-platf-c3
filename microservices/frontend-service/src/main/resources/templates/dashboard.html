@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Logistics System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/"><i class="bi bi-truck"></i> Logistics System</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="/">Головна</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/dashboard">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/orders">Замовлення</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/warehouse">Склад</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/deliveries">Доставки</a></li>
+                </ul>
+                <span class="navbar-text"><i class="bi bi-person-circle"></i> {username}</span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h2><i class="bi bi-speedometer2"></i> Dashboard</h2>
+        <hr>
+        
+        <div class="row g-4 mt-3">
+            <div class="col-md-4">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-subtitle mb-2">Замовлення</h6>
+                                <h2 class="card-title mb-0">{orderCount}</h2>
+                            </div>
+                            <i class="bi bi-cart-check" style="font-size: 3rem;"></i>
+                        </div>
+                        <a href="/orders" class="btn btn-light btn-sm mt-3">Детальніше</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-subtitle mb-2">Товари на складі</h6>
+                                <h2 class="card-title mb-0">{warehouseCount}</h2>
+                            </div>
+                            <i class="bi bi-box-seam" style="font-size: 3rem;"></i>
+                        </div>
+                        <a href="/warehouse" class="btn btn-light btn-sm mt-3">Детальніше</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-warning text-dark">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-subtitle mb-2">Доставки</h6>
+                                <h2 class="card-title mb-0">{deliveryCount}</h2>
+                            </div>
+                            <i class="bi bi-truck" style="font-size: 3rem;"></i>
+                        </div>
+                        <a href="/deliveries" class="btn btn-dark btn-sm mt-3">Детальніше</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="bi bi-gear"></i> Мікросервіси
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Order Service
+                            <a href="http://localhost:8081/q/dev/" target="_blank" class="badge bg-primary">:8081</a>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Warehouse Service
+                            <a href="http://localhost:8082/q/dev/" target="_blank" class="badge bg-success">:8082</a>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Delivery Service
+                            <a href="http://localhost:8083/q/dev/" target="_blank" class="badge bg-warning text-dark">:8083</a>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Notification Service
+                            <a href="http://localhost:8084/q/dev/" target="_blank" class="badge bg-info">:8084</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="bi bi-info-circle"></i> Про систему
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Технології:</strong></p>
+                        <ul>
+                            <li>Quarkus 3.26.4</li>
+                            <li>Java 21</li>
+                            <li>PostgreSQL 16</li>
+                            <li>gRPC + REST</li>
+                            <li>OIDC (Keycloak)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

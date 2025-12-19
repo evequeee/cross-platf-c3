@@ -52,13 +52,31 @@ public class DeliveryRepository {
     }
 
     @Transactional
-    public Delivery saveDelivery(Delivery delivery) {
+    public Delivery save(Delivery delivery) {
         if (delivery.getId() == null) {
             entityManager.persist(delivery);
             return delivery;
         } else {
             return entityManager.merge(delivery);
         }
+    }
+
+    @Transactional
+    public Delivery saveDelivery(Delivery delivery) {
+        return save(delivery);
+    }
+
+    public Optional<Delivery> findById(Long id) {
+        return findDeliveryById(id);
+    }
+
+    public List<Delivery> findAll() {
+        return findAllDeliveries();
+    }
+
+    @Transactional
+    public void deleteById(Long id) {
+        deleteDeliveryById(id);
     }
 
     @Transactional

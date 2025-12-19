@@ -1,4 +1,4 @@
-#Maven
+# Maven
 target/
 pom.xml.tag
 pom.xml.releaseBackup
@@ -13,7 +13,7 @@ release.properties
 bin/
 
 # IntelliJ
-.idea
+.idea/
 *.ipr
 *.iml
 *.iws
@@ -22,7 +22,7 @@ bin/
 nb-configuration.xml
 
 # Visual Studio Code
-.vscode
+.vscode/
 .factorypath
 
 # OSX
@@ -32,14 +32,29 @@ nb-configuration.xml
 *.swp
 *.swo
 
-# patch
+# Patch
 *.orig
 *.rej
 
 # Local environment
 .env
+.env.local
 
-# Plugin directory
+# Quarkus
 /.quarkus/cli/plugins/
+
 # TLS Certificates
 .certs/
+
+# Logs
+*.log
+logs/
+
+# Build artifacts
+*.jar
+*.war
+*.class
+
+# OS files
+Thumbs.db
+Desktop.ini

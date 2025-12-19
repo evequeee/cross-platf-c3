@@ -2,25 +2,20 @@ version: '3.8'
 
 services:
   keycloak:
-    image: quay.io/keycloak/keycloak:latest
+    image: quay.io/keycloak/keycloak:23.0
     container_name: logistics-keycloak
+    command: start-dev --import-realm
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
       KC_HTTP_PORT: 8180
-      KC_HOSTNAME_STRICT: false
-      KC_HOSTNAME_STRICT_HTTPS: false
-      KC_HTTP_ENABLED: true
     ports:
       - "8180:8180"
-    command:
-      - start-dev
-      - --http-port=8180
-      - --import-realm
     volumes:
-      - ./src/main/resources/quarkus-realm.json:/opt/keycloak/data/import/quarkus-realm.json
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8180/health/ready"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      - ./keycloak/logistics-realm.json:/opt/keycloak/data/import/logistics-realm.json
+    networks:
+      - logistics-network
+
+networks:
+  logistics-network:
+    driver: bridge
