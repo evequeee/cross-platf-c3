@@ -50,7 +50,7 @@ public class OrderResource {
     @PUT
     @Path("/{id}/status")
     public Response updateOrderStatus(@PathParam("id") Long id, @QueryParam("status") OrderStatus status) {
-        Order updated = orderRepository.updateStatus(id, status);
+        Order updated = orderRepository.updateOrderStatus(id, status);
         if (updated != null) {
             return Response.ok(updated).build();
         }
@@ -72,7 +72,7 @@ public class OrderResource {
     @DELETE
     @Path("/{id}")
     public Response deleteOrder(@PathParam("id") Long id) {
-        orderRepository.deleteById(id);
+        orderRepository.deleteOrderById(id);
         return Response.noContent().build();
     }
 

@@ -51,7 +51,7 @@ public class NotificationResource {
     @GET
     @Path("/pending")
     public List<Notification> getPendingNotifications() {
-        return notificationRepository.findPending();
+        return notificationRepository.findPendingNotifications();
     }
 
     @POST
@@ -83,11 +83,13 @@ public class NotificationResource {
     @Path("/{id}/status")
     public Response updateStatus(@PathParam("id") Long id, 
                                  @QueryParam("status") NotificationStatus status) {
-        Notification updated = notificationRepository.updateStatus(id, status);
-        if (updated != null) {
-            return Response.ok(updated).build();
-        }
-        return Response.status(Response.Status.NOT_FOUND).build();
+        return notificationRepository.findNotificationById(id)
+            .map(notification -> {
+                notification.setStatus(status);
+                Notification updated = notificationRepository.save(notification);
+                return Response.ok(updated).build();
+            })
+            .orElse(Response.status(Response.Status.NOT_FOUND).build());
     }
 
     @POST

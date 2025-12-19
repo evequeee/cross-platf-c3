@@ -31,25 +31,25 @@ public class OrderService {
     NotificationClient notificationClient;
 
     public List<Order> getAllOrders() {
-        return orderRepository.findAll();
+        return orderRepository.findAllOrders();
     }
 
     public Order getOrderById(Long id) {
-        return orderRepository.findById(id).orElse(null);
+        return orderRepository.findOrderById(id).orElse(null);
     }
 
     public Order createOrder(Order order) {
         LOG.info("Створення нового замовлення для клієнта: " + order.getCustomerName());
         
         // Валідація та збереження замовлення
-        Order savedOrder = orderRepository.save(order);
+        Order savedOrder = orderRepository.saveOrder(order);
         
         // Відправка повідомлення про створення замовлення
         try {
             notificationClient.sendNotification(
                 savedOrder.getCustomerEmail(),
                 "EMAIL",
-                "Замовлення #" + savedOrder.getId() + " створено",
+                "Замовлення #" + savedOrder.id + " створено",
                 "Ваше замовлення успішно прийняте і обробляється. Загальна сума: " + savedOrder.getTotalPrice() + " грн"
             );
             LOG.info("Повідомлення про створення замовлення відправлено");
@@ -63,7 +63,7 @@ public class OrderService {
     public void processOrder(Long orderId) {
         LOG.info("Початок обробки замовлення #" + orderId);
         
-        Order order = orderRepository.findById(orderId)
+        Order order = orderRepository.findOrderById(orderId)
             .orElseThrow(() -> new RuntimeException("Замовлення не знайдено"));
 
         // Крок 1: Перевірка наявності товарів на складі
@@ -91,13 +91,13 @@ public class OrderService {
             }
         }
 
-        orderRepository.updateStatus(orderId, OrderStatus.WAREHOUSE_RESERVED);
+        orderRepository.updateOrderStatus(orderId, OrderStatus.WAREHOUSE_RESERVED);
 
         // Крок 3: Створення доставки
         LOG.info("Створення доставки");
         try {
             deliveryClient.createDelivery(orderId, order.getDeliveryAddress());
-            orderRepository.updateStatus(orderId, OrderStatus.READY_FOR_DELIVERY);
+            orderRepository.updateOrderStatus(orderId, OrderStatus.READY_FOR_DELIVERY);
             
             // Повідомлення про готовність до доставки
             notificationClient.sendNotification(
